@@ -1,8 +1,8 @@
 <?php
 namespace Satooshi\Bundle\CoverallsV1Bundle\Config;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
  * Definition of .coveralls.yml configuration.
@@ -51,6 +51,11 @@ class CoverallsConfiguration implements ConfigurationInterface
                 // for php lib
                 ->scalarNode('src_dir')
                     ->defaultValue('src')
+                ->end()
+                ->arrayNode('src_dirs')
+                    ->defaultValue([])
+                    ->prototype('scalar')
+                    ->end()
                 ->end()
                 ->variableNode('coverage_clover')
                     ->defaultValue('build/logs/clover.xml')

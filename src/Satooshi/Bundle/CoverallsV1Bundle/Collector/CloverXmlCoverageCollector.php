@@ -23,14 +23,15 @@ class CloverXmlCoverageCollector
     /**
      * Collect coverage from XML object.
      *
-     * @param \SimpleXMLElement $xml     Clover XML object.
-     * @param string            $rootDir Path to repository root directory.
-     *
+     * @param  SimpleXMLElement                                  $xml     Clover XML object.
+     * @param  array                                            $rootDir Path to src directory.
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Entity\JsonFile
      */
-    public function collect(\SimpleXMLElement $xml, $rootDir)
+    public function collect(\SimpleXMLElement $xml, array $rootDirs)
     {
-        $root = rtrim($rootDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        array_walk($rootDirs, function(&$d) {
+            $d = $d . DIRECTORY_SEPARATOR;
+        });
 
         if (!isset($this->jsonFile)) {
             $this->jsonFile = new JsonFile();
@@ -40,14 +41,14 @@ class CloverXmlCoverageCollector
         $runAt = $this->collectRunAt($xml);
         $this->jsonFile->setRunAt($runAt);
 
-        $xpaths = array(
+        $xpaths = [
             '/coverage/project/file',
             '/coverage/project/package/file',
-        );
+        ];
 
         foreach ($xpaths as $xpath) {
             foreach ($xml->xpath($xpath) as $file) {
-                $srcFile = $this->collectFileCoverage($file, $root);
+                $srcFile = $this->collectFileCoverage($file, $rootDirs);
 
                 if ($srcFile !== null) {
                     $this->jsonFile->addSourceFile($srcFile);
@@ -63,9 +64,8 @@ class CloverXmlCoverageCollector
     /**
      * Collect timestamp when the job ran.
      *
-     * @param SimpleXMLElement $xml    Clover XML object of a file.
-     * @param string           $format DateTime format.
-     *
+     * @param  SimpleXMLElement $xml    Clover XML object of a file.
+     * @param  string           $format DateTime format.
      * @return string
      */
     protected function collectRunAt(\SimpleXMLElement $xml, $format = 'Y-m-d H:i:s O')
@@ -79,35 +79,48 @@ class CloverXmlCoverageCollector
     /**
      * Collect coverage data of a file.
      *
-     * @param SimpleXMLElement $file Clover XML object of a file.
-     * @param string           $root Path to src directory.
-     *
-     * @return null|\Satooshi\Bundle\CoverallsV1Bundle\Entity\SourceFile
+     * @param  SimpleXMLElement                                         $file Clover XML object of a file.
+     * @param  array                                                    $rootDirs Path to src directory.
+     * @return NULL|\Satooshi\Bundle\CoverallsV1Bundle\Entity\SourceFile
      */
-    protected function collectFileCoverage(\SimpleXMLElement $file, $root)
+    protected function collectFileCoverage(\SimpleXMLElement $file, array $rootDirs)
     {
-        $absolutePath = (string) ($file['path'] ?: $file['name']);
+        $absolutePath = (string) $file['name'];
 
-        if (false === strpos($absolutePath, $root)) {
+        if (false === ($root = $this->validFileForCoverage($absolutePath, $rootDirs))) {
             return null;
         }
 
-        if ($root !== DIRECTORY_SEPARATOR) {
-            $filename = str_replace($root, '', $absolutePath);
-        } else {
-            $filename = $absolutePath;
-        }
+        $removeFromPath = $root === DIRECTORY_SEPARATOR ?
+            $root : realpath($root.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $filename = str_replace($removeFromPath, '', $absolutePath);
 
         return $this->collectCoverage($file, $absolutePath, $filename);
     }
 
     /**
+     * @param string $absolutePath
+     * @param array  $rootDirs
+     *
+     * @return bool
+     */
+    protected function validFileForCoverage($absolutePath, array $rootDirs)
+    {
+        foreach ($rootDirs as $dir) {
+            if (false !== strpos($absolutePath, $dir)) {
+                return $dir;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Collect coverage data.
      *
-     * @param SimpleXMLElement $file     Clover XML object of a file.
-     * @param string           $path     Path to source file.
-     * @param string           $filename Filename.
-     *
+     * @param  SimpleXMLElement                                    $file     Clover XML object of a file.
+     * @param  string                                              $path     Path to source file.
+     * @param  string                                              $filename Filename.
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Entity\SourceFile
      */
     protected function collectCoverage(\SimpleXMLElement $file, $path, $filename)

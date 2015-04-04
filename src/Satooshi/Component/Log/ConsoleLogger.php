@@ -1,5 +1,5 @@
 <?php
-namespace Satooshi\Component\Log;
+namespace Contrib\Component\Log;
 
 use Psr\Log\AbstractLogger;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,7 +32,6 @@ class ConsoleLogger extends AbstractLogger
      * {@inheritdoc}
      *
      * @return void
-     *
      * @see \Psr\Log\LoggerInterface::log()
      */
     public function log($level, $message, array $context = array())

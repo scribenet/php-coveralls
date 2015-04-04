@@ -27,18 +27,11 @@ class Configuration
     // only for php lib
 
     /**
-     * Absolute path to src directory to include coverage report.
+     * Absolute path to src directories to include coverage report.
      *
      * @var string
      */
-    protected $srcDir;
-
-    /**
-     * Absolute path to repository root directory.
-     *
-     * @var string
-     */
-    protected $rootDir;
+    protected $srcDirs;
 
     /**
      * Absolute paths to clover.xml.
@@ -89,8 +82,7 @@ class Configuration
     /**
      * Set repository token.
      *
-     * @param string $repoToken
-     *
+     * @param  string                                                 $repoToken
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setRepoToken($repoToken)
@@ -113,7 +105,7 @@ class Configuration
     /**
      * Return repository token.
      *
-     * @return string|null
+     * @return string|NULL
      */
     public function getRepoToken()
     {
@@ -123,8 +115,7 @@ class Configuration
     /**
      * Set service name.
      *
-     * @param string $serviceName
-     *
+     * @param  string                                                 $serviceName
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setServiceName($serviceName)
@@ -147,7 +138,7 @@ class Configuration
     /**
      * Return service name.
      *
-     * @return string|null
+     * @return string|NULL
      */
     public function getServiceName()
     {
@@ -155,46 +146,32 @@ class Configuration
     }
 
     /**
-     * Set absolute path to src directory to include coverage report.
+     * Return absolute path to src directory to include coverage report.
      *
-     * @param string $srcDir
-     *
-     * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
+     * @return array
      */
-    public function setSrcDir($srcDir)
+    public function getSrcDirs()
     {
-        $this->srcDir = $srcDir;
-
-        return $this;
+        return $this->srcDirs;
     }
 
     /**
-     * Return absolute path to src directory to include coverage report.
+     * Set absolute path to src directory to include coverage report.
      *
-     * @return string
+     * @param  array                                   $srcDirs
+     * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
-    public function getSrcDir()
+    public function setSrcDirs($srcDirs)
     {
-        return $this->srcDir;
-    }
-
-    public function setRootDir($rootDir)
-    {
-        $this->rootDir = $rootDir;
+        $this->srcDirs = $srcDirs;
 
         return $this;
-    }
-
-    public function getRootDir()
-    {
-        return $this->rootDir;
     }
 
     /**
      * Set absolute paths to clover.xml.
      *
-     * @param string $cloverXmlPaths
-     *
+     * @param  string                                                 $cloverXmlPaths
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setCloverXmlPaths(array $cloverXmlPaths)
@@ -207,8 +184,7 @@ class Configuration
     /**
      * Add absolute path to clover.xml.
      *
-     * @param string $cloverXmlPath
-     *
+     * @param  string                                                 $cloverXmlPath
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function addCloverXmlPath($cloverXmlPath)
@@ -231,8 +207,7 @@ class Configuration
     /**
      * Set absolute path to output json_file.
      *
-     * @param string $jsonPath
-     *
+     * @param  string                                                 $jsonPath
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setJsonPath($jsonPath)
@@ -255,8 +230,7 @@ class Configuration
     /**
      * Set whether to send json_file to jobs API.
      *
-     * @param boolean $dryRun
-     *
+     * @param  boolean                                                $dryRun
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setDryRun($dryRun)
@@ -279,8 +253,7 @@ class Configuration
     /**
      * Set whether to exclude source files that have no executable statements.
      *
-     * @param boolean $excludeNoStatements
-     *
+     * @param  boolean                                                $excludeNoStatements
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setExcludeNoStatements($excludeNoStatements)
@@ -293,8 +266,7 @@ class Configuration
     /**
      * Set whether to exclude source files that have no executable statements unless false.
      *
-     * @param boolean $excludeNoStatements
-     *
+     * @param  boolean                                                $excludeNoStatements
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setExcludeNoStatementsUnlessFalse($excludeNoStatements)
@@ -319,8 +291,7 @@ class Configuration
     /**
      * Set whether to show log.
      *
-     * @param boolean $verbose
-     *
+     * @param  boolean                                                $verbose
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setVerbose($verbose)
@@ -343,8 +314,7 @@ class Configuration
     /**
      * Set runtime environment name.
      *
-     * @param string $env Runtime environment name.
-     *
+     * @param  string                                                 $env Runtime environment name.
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Config\Configuration
      */
     public function setEnv($env)

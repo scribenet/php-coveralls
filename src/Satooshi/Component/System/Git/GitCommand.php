@@ -1,7 +1,7 @@
 <?php
-namespace Satooshi\Component\System\Git;
+namespace Contrib\Component\System\Git;
 
-use Satooshi\Component\System\SystemCommand;
+use Contrib\Component\System\SystemCommand;
 
 /**
  * Git command.

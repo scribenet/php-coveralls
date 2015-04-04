@@ -1,10 +1,10 @@
 <?php
 namespace Satooshi\Bundle\CoverallsV1Bundle\Collector;
 
+use Satooshi\Bundle\CoverallsV1Bundle\Entity\Git\Remote;
 use Satooshi\Bundle\CoverallsV1Bundle\Entity\Git\Commit;
 use Satooshi\Bundle\CoverallsV1Bundle\Entity\Git\Git;
-use Satooshi\Bundle\CoverallsV1Bundle\Entity\Git\Remote;
-use Satooshi\Component\System\Git\GitCommand;
+use Contrib\Component\System\Git\GitCommand;
 
 /**
  * Git repository info collector.
@@ -52,7 +52,6 @@ class GitInfoCollector
      * Collect branch name.
      *
      * @return string
-     *
      * @throws \RuntimeException
      */
     protected function collectBranch()
@@ -74,7 +73,6 @@ class GitInfoCollector
      * Collect commit info.
      *
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Entity\Git\Commit
-     *
      * @throws \RuntimeException
      */
     protected function collectCommit()
@@ -100,7 +98,6 @@ class GitInfoCollector
      * Collect remotes info.
      *
      * @return \Satooshi\Bundle\CoverallsV1Bundle\Entity\Git\Remote[]
-     *
      * @throws \RuntimeException
      */
     protected function collectRemotes()
@@ -145,7 +142,7 @@ class GitInfoCollector
     /**
      * Return git command.
      *
-     * @return \Satooshi\Component\System\Git\GitCommand
+     * @return \Contrib\Component\System\Git\GitCommand
      */
     public function getCommand()
     {
