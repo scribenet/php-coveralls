@@ -27,11 +27,11 @@ class Configuration
     // only for php lib
 
     /**
-     * Absolute path to src directory to include coverage report.
+     * Absolute path to src directories to include coverage report.
      *
      * @var string
      */
-    protected $srcDir;
+    protected $srcDirs;
 
     /**
      * Absolute paths to clover.xml.
@@ -146,26 +146,26 @@ class Configuration
     }
 
     /**
-     * Set absolute path to src directory to include coverage report.
+     * Return absolute path to src directory to include coverage report.
      *
-     * @param  string                                                 $srcDir
-     * @return \Contrib\Bundle\CoverallsV1Bundle\Config\Configuration
+     * @return array
      */
-    public function setSrcDir($srcDir)
+    public function getSrcDirs()
     {
-        $this->srcDir = $srcDir;
-
-        return $this;
+        return $this->srcDirs;
     }
 
     /**
-     * Return absolute path to src directory to include coverage report.
+     * Set absolute path to src directory to include coverage report.
      *
-     * @return string
+     * @param  array                                   $srcDirs
+     * @return \Contrib\Bundle\CoverallsV1Bundle\Config\Configuration
      */
-    public function getSrcDir()
+    public function setSrcDirs($srcDirs)
     {
-        return $this->srcDir;
+        $this->srcDirs = $srcDirs;
+
+        return $this;
     }
 
     /**

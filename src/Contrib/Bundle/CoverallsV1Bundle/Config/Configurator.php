@@ -82,13 +82,30 @@ class Configurator
         $repoSecretToken = $options['repo_secret_token'];
 
         return $configuration
-        ->setRepoToken($repoToken !== null ? $repoToken : $repoSecretToken)
-        ->setServiceName($options['service_name'])
-        // for PHP lib
-        ->setSrcDir($this->ensureSrcDir($options['src_dir'], $rootDir, $file))
-        ->setCloverXmlPaths($this->ensureCloverXmlPaths($options['coverage_clover'], $rootDir, $file))
-        ->setJsonPath($this->ensureJsonPath($options['json_path'], $rootDir, $file))
-        ->setExcludeNoStatements($options['exclude_no_stmt']);
+            ->setRepoToken($repoToken !== null ? $repoToken : $repoSecretToken)
+            ->setServiceName($options['service_name'])
+            ->setSrcDirs(
+                $this->ensureSrcDirs(
+                    (is_array($options['src_dirs']) && count($options['src_dirs']) > 0 ?
+                        $options['src_dirs'] : [$options['src_dir']]),
+                    $rootDir,
+                    $file
+                )
+            )
+            ->setCloverXmlPaths($this->ensureCloverXmlPaths($options['coverage_clover'], $rootDir, $file))
+            ->setJsonPath($this->ensureJsonPath($options['json_path'], $rootDir, $file))
+            ->setExcludeNoStatements($options['exclude_no_stmt'])
+        ;
+    }
+
+    protected function ensureSrcDirs($option, $rootDir, Path $file)
+    {
+        $paths = [];
+        foreach ($option as $o) {
+            $paths[] = $this->ensureSrcDir($o, $rootDir, $file);
+        }
+
+        return $paths;
     }
 
     /**

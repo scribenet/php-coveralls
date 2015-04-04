@@ -24,12 +24,14 @@ class CloverXmlCoverageCollector
      * Collect coverage from XML object.
      *
      * @param  SimpleXMLElement                                  $xml     Clover XML object.
-     * @param  string                                            $rootDir Path to src directory.
+     * @param  array                                            $rootDir Path to src directory.
      * @return \Contrib\Bundle\CoverallsV1Bundle\Entity\JsonFile
      */
-    public function collect(\SimpleXMLElement $xml, $rootDir)
+    public function collect(\SimpleXMLElement $xml, array $rootDirs)
     {
-        $root = $rootDir . DIRECTORY_SEPARATOR;
+        array_walk($rootDirs, function(&$d) {
+            $d = $d . DIRECTORY_SEPARATOR;
+        });
 
         if (!isset($this->jsonFile)) {
             $this->jsonFile = new JsonFile();
@@ -39,14 +41,14 @@ class CloverXmlCoverageCollector
         $runAt = $this->collectRunAt($xml);
         $this->jsonFile->setRunAt($runAt);
 
-        $xpaths = array(
+        $xpaths = [
             '/coverage/project/file',
             '/coverage/project/package/file',
-        );
+        ];
 
         foreach ($xpaths as $xpath) {
             foreach ($xml->xpath($xpath) as $file) {
-                $srcFile = $this->collectFileCoverage($file, $root);
+                $srcFile = $this->collectFileCoverage($file, $rootDirs);
 
                 if ($srcFile !== null) {
                     $this->jsonFile->addSourceFile($srcFile);
@@ -78,20 +80,39 @@ class CloverXmlCoverageCollector
      * Collect coverage data of a file.
      *
      * @param  SimpleXMLElement                                         $file Clover XML object of a file.
-     * @param  string                                                   $root Path to src directory.
+     * @param  array                                                    $rootDirs Path to src directory.
      * @return NULL|\Contrib\Bundle\CoverallsV1Bundle\Entity\SourceFile
      */
-    protected function collectFileCoverage(\SimpleXMLElement $file, $root)
+    protected function collectFileCoverage(\SimpleXMLElement $file, array $rootDirs)
     {
         $absolutePath = (string) $file['name'];
 
-        if (false === strpos($absolutePath, $root)) {
+        if (false === ($root = $this->validFileForCoverage($absolutePath, $rootDirs))) {
             return null;
         }
 
-        $filename = str_replace($root, '', $absolutePath);
+        $removeFromPath = $root === DIRECTORY_SEPARATOR ?
+            $root : realpath($root.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $filename = str_replace($removeFromPath, '', $absolutePath);
 
         return $this->collectCoverage($file, $absolutePath, $filename);
+    }
+
+    /**
+     * @param string $absolutePath
+     * @param array  $rootDirs
+     *
+     * @return bool
+     */
+    protected function validFileForCoverage($absolutePath, array $rootDirs)
+    {
+        foreach ($rootDirs as $dir) {
+            if (false !== strpos($absolutePath, $dir)) {
+                return $dir;
+            }
+        }
+
+        return false;
     }
 
     /**
